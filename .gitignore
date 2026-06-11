@@ -1,0 +1,36 @@
+# --- renv (project-local package library; like .venv) ---
+# Commit renv.lock (the lockfile) but NOT the installed library.
+renv/library/
+renv/local/
+renv/cellar/
+renv/lock/
+renv/python/
+renv/staging/
+renv/sandbox/
+
+# --- R session/history cruft ---
+.Rhistory
+.Rapp.history
+.RData
+.Ruserdata
+*.Rproj.user/
+.Rproj.user
+
+# --- secrets: NEVER commit your Comtrade key ---
+.Renviron
+.env
+
+# --- data & generated outputs (regenerate from scripts; don't track) ---
+data_raw/*
+data_processed/*
+figures/*
+outputs/*
+# keep the empty folders in git so the structure travels:
+!data_raw/.gitkeep
+!data_processed/.gitkeep
+!figures/.gitkeep
+!outputs/.gitkeep
+
+# --- OS noise ---
+.DS_Store
+Thumbs.db
