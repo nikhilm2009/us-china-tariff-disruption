@@ -1,17 +1,20 @@
 # ============================================================
 # 03_tariffs.R  —  Trade Capstone
-# Attaches a COARSE sector-level tariff lookup and builds
-# retaliation_ratio = retaliating-side rate / initiating-side rate.
+# Attaches Section 301 tariff rates to the US-China HS2 panel.
 #
-# >>> THIS TABLE IS THE MVP'S WEAKEST LINK BY DESIGN. <<<
-# It is a deliberately coarse, hand-coded approximation of the PIIE
-# "Trade War Timeline" tranches, mapped to HS2 chapters. It exists so
-# the pipeline runs END TO END today. The single highest-value upgrade
-# later is to replace ONLY this table with the real PIIE tranche->HS2
-# mapping. Nothing downstream changes.
+# These are CHAPTER-LEVEL approximations of statutory rates,
+# derived from the Section 301 tranche compositions:
+#   List 1  Jul 2018  25%  machinery/aerospace/tech  (HS 84,85,88,90)
+#   List 2  Aug 2018  25%  chemicals/plastics/rail   (HS 28,29,38,39,86)
+#   List 3  Sep 2018  10% -> 25% (May 2019)          (HS 73,87,94, many)
+#   List 4A Sep 2019  15% -> 7.5% (Feb 2020)         (HS 61-64, etc.)
 #
-# Sources to cite when you upgrade:
-#   PIIE "US-China Trade War Tariffs: An Up-to-Date Chart" (Bown)
+# China retaliation: heavy on agriculture (HS 01-24), autos (87),
+#   energy (27). Aircraft (88) deliberately spared.
+#
+# NOTE: These are Tier 1 approximations used for the HS2 overview only.
+# The main analysis uses the Bown (2021) product-level rates at HS6
+# (built by 03b_build_tariff_csvs.R, used in scripts 07+).
 # ============================================================
 
 library(dplyr)
@@ -21,82 +24,55 @@ proc_dir <- "data_processed"
 panel <- read_csv(file.path(proc_dir, "panel_pre_tariff.csv"),
                   show_col_types = FALSE)
 
-# ------------------------------------------------------------
-# COARSE TARIFF TIERS (percent, approximate effective conflict-period rate)
-# Two sides per pair: 'init' = side that initiated/raised first,
-#                     'retal' = retaliating side.
-# For the three US dyads the US is treated as initiator (Section 232 / 301).
-# For China-Australia, China is the initiator (2020 coercive measures).
-#
-# HS2 buckets are grouped broadly. Anything not listed -> baseline low tier.
-# These numbers are ROUND APPROXIMATIONS, not the real schedule.
-# ------------------------------------------------------------
-
-# Helper: assign a coarse tier to an HS2 chapter
-coarse_init_rate <- function(pair, sector) {
+# ---- US tariff on Chinese imports, by HS2 chapter and year ----
+us_on_china_rate <- function(sector, year) {
   s <- as.integer(sector)
-  dplyr::case_when(
-    # US-China: List 3/4 hit broad manufactured/industrial goods hard
-    pair == "us_china" & s %in% c(72:83) ~ 25,  # base metals, articles
-    pair == "us_china" & s %in% c(84:85) ~ 25,  # machinery, electrical
-    pair == "us_china" & s %in% c(86:89) ~ 25,  # vehicles, transport
-    pair == "us_china" & s %in% c(39:40) ~ 10,  # plastics, rubber
-    pair == "us_china" ~ 7.5,                    # broad List 4A-ish
+  list1  <- s %in% c(84, 85, 88, 89, 90)
+  list2  <- s %in% c(28, 29, 38, 39, 40, 86)
+  list3  <- s %in% c(72, 73, 74, 76, 83, 87, 44, 48, 94, 68, 69, 70)
+  list4a <- s %in% c(42, 43, 61, 62, 63, 64, 65, 66, 67, 91, 92, 95)
 
-    # US-EU and US-Canada: Section 232 steel(72)/aluminum(76)
-    pair %in% c("us_eu", "us_canada") & s == 72 ~ 25,
-    pair %in% c("us_eu", "us_canada") & s == 76 ~ 10,
-    pair %in% c("us_eu", "us_canada") ~ 0,
-
-    # China-Australia: targeted coercive tariffs (barley, wine, coal, beef...)
-    pair == "china_aus" & s %in% c(22) ~ 200,    # wine
-    pair == "china_aus" & s %in% c(10) ~ 80,     # barley/cereals
-    pair == "china_aus" & s %in% c(27) ~ 20,     # coal/mineral fuels
-    pair == "china_aus" & s %in% c(02) ~ 12,     # meat
-    pair == "china_aus" ~ 0,
-
-    TRUE ~ 0
-  )
+  if (year <= 2017) return(0)
+  if (list1 || list2) return(25)
+  if (list3) { if (year == 2018) return(10); return(25) }
+  if (list4a) { if (year <= 2018) return(0); if (year == 2019) return(15); return(7.5) }
+  if (year >= 2019) return(5)
+  return(0)
 }
 
-# Retaliating side responds roughly in kind on the goods it can hit
-coarse_retal_rate <- function(pair, sector) {
+# ---- China retaliation on US exports, by HS2 chapter and year ----
+china_on_us_rate <- function(sector, year) {
   s <- as.integer(sector)
-  dplyr::case_when(
-    # China retaliated heavily on US agriculture / vehicles
-    pair == "us_china" & s %in% c(01:24) ~ 25,   # ag & food
-    pair == "us_china" & s %in% c(87) ~ 40,      # autos (peak)
-    pair == "us_china" & s %in% c(27) ~ 10,      # energy
-    pair == "us_china" ~ 7.5,
+  ag       <- s %in% c(1:24)
+  autos    <- s %in% c(87)
+  energy   <- s %in% c(27)
+  chem_ind <- s %in% c(28, 29, 39)
+  aircraft <- s %in% c(88)   # deliberately spared by China
 
-    # EU/Canada retaliated on iconic US goods (whiskey, bikes, ag)
-    pair %in% c("us_eu", "us_canada") & s %in% c(22) ~ 25, # spirits
-    pair %in% c("us_eu", "us_canada") & s %in% c(01:24) ~ 15,
-    pair %in% c("us_eu", "us_canada") & s %in% c(87) ~ 10,
-    pair %in% c("us_eu", "us_canada") ~ 0,
-
-    # Australia's response was limited (mostly WTO action, little tariff)
-    pair == "china_aus" ~ 0,
-
-    TRUE ~ 0
-  )
+  if (year <= 2017) return(0)
+  if (aircraft) return(0)
+  if (ag) return(25)
+  if (autos) { if (year == 2018) return(40); return(25) }
+  if (energy) { if (year <= 2018) return(10); return(25) }
+  if (chem_ind) return(25)
+  if (year >= 2019) return(10)
+  return(5)
 }
 
-# A small floor so we never divide by zero; interpret with care.
-EPS <- 1.0  # 1 percentage point floor
+EPS <- 1.0  # 1pp floor to avoid divide-by-zero
 
 panel2 <- panel %>%
+  rowwise() %>%
   mutate(
-    init_rate  = mapply(coarse_init_rate,  pair, sector),
-    retal_rate = mapply(coarse_retal_rate, pair, sector),
-    # retaliation_ratio: retaliating-side capacity relative to initiator's pressure
-    retaliation_ratio = (retal_rate + EPS) / (init_rate + EPS)
-  )
+    init_rate  = us_on_china_rate(sector, year),
+    retal_rate = china_on_us_rate(sector, year)
+  ) %>%
+  ungroup() %>%
+  mutate(retaliation_ratio = (retal_rate + EPS) / (init_rate + EPS))
 
 write_csv(panel2, file.path(proc_dir, "panel_with_tariffs.csv"))
-message("Wrote ", nrow(panel2), " rows -> ",
-        file.path(proc_dir, "panel_with_tariffs.csv"))
+message("Wrote ", nrow(panel2), " rows -> panel_with_tariffs.csv")
 message("retaliation_ratio range: ",
-        round(min(panel2$retaliation_ratio, na.rm = TRUE), 2), " to ",
-        round(max(panel2$retaliation_ratio, na.rm = TRUE), 2))
+        round(min(panel2$retaliation_ratio), 2), " to ",
+        round(max(panel2$retaliation_ratio), 2))
 message("Next: 04_model.R")

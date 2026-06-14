@@ -1,5 +1,5 @@
 # --- renv (project-local package library; like .venv) ---
-# Commit renv.lock (the lockfile) but NOT the installed library.
+# Commit renv.lock but NOT the installed library.
 renv/library/
 renv/local/
 renv/cellar/
@@ -16,20 +16,25 @@ renv/sandbox/
 *.Rproj.user/
 .Rproj.user
 
-# --- secrets: NEVER commit your Comtrade key ---
+# --- secrets: NEVER commit the Comtrade API key ---
 .Renviron
 .env
 
-# --- data & generated outputs (regenerate from scripts; don't track) ---
-data_raw/*
-data_processed/*
-figures/*
-outputs/*
-# keep the empty folders in git so the structure travels:
-!data_raw/.gitkeep
-!data_processed/.gitkeep
-!figures/.gitkeep
-!outputs/.gitkeep
+# --- large raw Comtrade pulls we don't use in the main analysis ---
+# (us_eu, us_canada, china_aus only used in early HS2 multi-pair work)
+# Re-pull via 01_pull.R if needed.
+data_raw/us_eu.rds
+data_raw/us_canada.rds
+data_raw/china_aus.rds
+
+# --- data_processed RDS intermediates (regenerable by running scripts) ---
+data_processed/*.rds
+
+# --- figures: TRACK all PNGs ---
+# Figures are deliverables; tracking them makes the repo self-contained
+
+# --- outputs: TRACK all documents ---
+# FINDINGS.md, EXECUTIVE_SUMMARY.md etc. are authored, not generated
 
 # --- OS noise ---
 .DS_Store
