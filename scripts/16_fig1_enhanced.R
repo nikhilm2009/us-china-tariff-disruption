@@ -87,7 +87,7 @@ pA <- ggplot() +
        x="US tariff 2019 (%)", y="Import change vs 2015-17 baseline",
        caption="Aggregation hides the relationship because tariffs are applied to products, not chapters.") +
   theme_cap +
-  theme(plot.margin = margin(t=5, r=5, b=5, l=20))
+  theme(plot.margin = ggplot2::margin(t=5, r=5, b=5, l=20))
 
 # ---- PANEL B: pipeline diagram (text + arrows, no illustrative bars) ----
 # Using ggplot with annotate so it stays in the same framework.
@@ -135,7 +135,7 @@ pB <- ggplot() +
        subtitle="Both endpoints are estimated. Steps show the logical path.") +
   theme(plot.title=element_text(face="bold", size=14),
         plot.subtitle=element_text(color="grey35", size=10.5),
-        plot.margin=margin(t=5, r=15, b=5, l=5))
+        plot.margin=ggplot2::margin(t=5, r=15, b=5, l=5))
 
 # ---- COMBINE with patchwork ----
 combined <- pA + pB + plot_layout(widths=c(2, 1))

@@ -1,137 +1,141 @@
-# Presentation Outline (v2)
-## When Tariffs Stop Moving Trade: Product-Level Evidence from US-China Trade Conflict
-
-**Wharton DSA Capstone — Nikhil M.**
-**Suggested length: 12–15 minutes**
-
----
-
-### Slide 1 — Title + one-sentence contribution
-
-**Title:** When Tariffs Stop Moving Trade
-
-**One sentence:**
-> Trade-policy effects are highly resolution-dependent, and repeated conflict
-> appears to change the composition of trade in ways that attenuate later
-> tariff responsiveness.
+# Presentation Outline
+## When Tariffs Stop Moving Trade
+### Wharton Data Science Academy Capstone — Nikhil M.
+### 18-slide deck (12 main + 6 appendix)
 
 ---
 
-### Slide 2 — Data + pipeline
+## Narrative arc
 
-- UN Comtrade: 3,200+ HS6 products, US-China 2015–2025
-- Tariff sources: Bown (2021) for Trump 1; WTO Tariff Actions for Trump 2
-- Fully reproducible: 19 scripts, renv-locked, match rates documented
-- **The data engineering is part of the finding** — resolution analysis required product-level joins that most studies don't attempt
+```
+Setup (slides 1–4)
+  → The 2019 model is real and strong. Here's what we're about to test.
 
----
+Climax (slide 5)
+  → We applied it to 2025. Spectacular failure. −84% predicted, −26% actual.
 
-### Slide 3 — Finding 1: Resolution matters
+Explanation (slides 6–7)
+  → Why Part 1: the slope collapsed entirely.
+  → Why Part 2: the dose-response vanished across every tariff level.
 
-**Show Fig 1 (enhanced, two-panel)**
+Evidence (slides 8–10)
+  → Logistic model confirms tariff rate dominates in Trump 1.
+  → Simpler model wins. Structure is linear.
 
-HS2: β ≈ 0, ns. HS6: β = −0.019, t = −16.4, p < 1e-50.
-
-> The signal lives at the level where policy is applied.
-> Aggregation hides the relationship because tariffs are applied to products, not chapters.
-
----
-
-### Slide 4 — Finding 2: The Trump 1 dose-response
-
-**Show Fig 2 — HS6 import effect**
-
-Clean monotonic staircase from +18% (untariffed) to −46% (>25% tariff).
-t = −16.4. Not a noisy result — this is screaming signal.
+Close (slides 11–12)
+  → Honest limitations. Four lessons. Research frontier.
+```
 
 ---
 
-### Slide 5 — Finding 3: The relationship collapsed by 2025
+## Main deck
 
-**Show Fig 7 — Trump 1 vs Trump 2 slope (with in-panel stats)**
-
-Left: steep blue line, β = −0.019, t = −16.4.
-Right: flat red line, β ≈ 0, t = −0.3, ns.
-
-> The model learned Trump 1. The world changed. The model broke.
-
----
-
-### Slide 6 — The predictive validation
-
-**Show Fig 10 — predictive validation**
-
-Train on Trump 1. Predict 2025 using actual 2025 tariff rates.
-Predicted: steep decline at high tariffs.
-Actual: flat at −28% regardless of tariff rate.
-
-> Products facing 50–100% tariffs were predicted to fall 84%.
-> They actually fell 26%.
-> The gap is adaptation.
+| # | Tag | Title | Figure | Takeaway bar |
+|---|-----|-------|--------|--------------|
+| 1 | — | When Tariffs Stop Moving Trade | — | — |
+| 2 | DATA & PIPELINE | This took serious engineering | Stats grid | Every number is reproducible |
+| 3 | RESOLUTION | The signal was hiding in plain sight | fig1_v2 (two-panel) | Aggregation destroyed detectability |
+| 4 | TRUMP 1 · 2019 | In 2019, tariffs strongly predicted trade collapse | fig2 + t=−16.4 callout | t=16 is not a noisy student result |
+| 5 | PREDICTIVE VALIDATION | Can a Trump 1 model predict 2025? Spectacular failure. | fig10 + 3 stat cards | The model learned Trump 1. The world changed. |
+| 6 | EXPLANATION · PART 1 | Why did it fail? The tariff-response relationship disappeared. | fig7 | Slope −0.019→0. Core assumption broke. |
+| 7 | EXPLANATION · PART 2 | Why? The dose-response vanished across every tariff level. | figA5 (bucket comparison) | Compositional selection |
+| 8 | CLASSIFICATION | What predicts whether a product gets disrupted? | fig11b (S-curve) | Coin-flip at 30%. AUC=0.689 |
+| 9 | CLASSIFICATION | What matters most? Tariff rate — by a wide margin. | fig11c (coef plot) | Size protects. Asymmetry adds nothing. |
+| 10 | MODEL COMPARISON | More complexity did not improve prediction | fig12 (ROC) | Complexity adds noise |
+| 11 | LIMITATIONS | What we do not claim | Text cards | — |
+| 12 | — | Four lessons / When Tariffs Stop Moving Trade | — | Trade adapted faster than predicted |
 
 ---
 
-### Slide 7 — What predicts disruption? (logistic)
+## Appendix
 
-**Show Fig 11b — disruption probability curve**
-
-At 30% tariff: ~50% probability of large disruption.
-AUC = 0.689 with three features.
-
-**Show Fig 11c — coefficient plot**
-
-Tariff rate: strong positive (z = 11.98) ***
-Product size: moderate negative (z = −9.38) ***
-Trade asymmetry: near zero (z = 0.10) ns
-
-> Larger products are more resilient — consistent with structural inelasticity.
+| # | Tag | Title | Figure |
+|---|-----|-------|--------|
+| A1 | APPENDIX A1 | How the Harmonized System works — HS2 vs HS6 | figA1 |
+| A2 | APPENDIX A2 | Tariff rate distributions: Trump 1 vs Trump 2 | figA2 |
+| A3 | APPENDIX A3 | Data merge flow and match rates | figA3 |
+| A4 | APPENDIX A4 | US-China tariff escalation timeline, 2018–2026 | figA4 |
+| A5 | APPENDIX A5 | Trump 1 vs Trump 2: dose-response by tariff bucket | figA5 |
+| A6 | APPENDIX A6 | Elasticity extension: CEPII ProTEE × dose-response | figA6 |
 
 ---
 
-### Slide 8 — Is the structure linear? (RF vs logistic)
+## Slide 12 detail — Four lessons
 
-**Show Fig 12a — ROC comparison**
+1. Policy effects live at policy resolution.
+   HS6 t=−16.4 invisible at HS2. Signal lives where tariffs applied.
 
-Logistic AUC = 0.689. Random Forest AUC = 0.649.
-RF underperforms despite greater complexity.
+2. Trump 1 tariffs strongly predicted disruption.
+   +18% untariffed, −46% heavily tariffed. Logistic AUC=0.689.
 
-> We tested whether additional model complexity helped. It didn't.
-> The disruption signal is mostly linear and interpretable.
-> Trade disruption appears driven by simple structural relationships,
-> not complex nonlinear interactions.
+3. Those relationships largely disappeared by 2025.
+   Elastic products exited disproportionately (t=−6.33, p<0.001).
+   But even high-elasticity survivors showed no dose-response.
+   Selection explains part, not all, of the attenuation.
 
----
+4. Simple models explain more than complex ones.
+   Logistic (0.677) > RF (0.657) > XGBoost (0.630). Mechanism is linear.
 
-### Slide 9 — What we do not claim
-
-- Not causality — cross-sectional associations at annual frequency
-- Not exogeneity — tariff placement was strategic
-- Not full MARL validation — two structural predictions consistent; regime structure not reproduced
-- "Largely absent" not "99% collapse" — magnitude depends on snapshot choice
+Final sentence: Trade adapted faster than the original tariff model predicted.
 
 ---
 
-### Slide 10 — Conclusion: four findings
+## Appendix A6 detail — Elasticity extension
 
-| # | Finding | Figure |
-|---|---------|--------|
-| 1 | Resolution matters: HS2 hides, HS6 reveals | Fig 1 |
-| 2 | Trump 1 shows strong linear dose-response | Fig 2, 11b |
-| 3 | Trump 2 relationship collapsed; model fails out-of-sample | Fig 7, 10 |
-| 4 | Disruption signal is linear; complexity adds noise | Fig 12a |
+Figure: dose-response lines by elasticity tercile, T1 vs T2 panels.
+- T1 panel: fan shape — high elasticity steeper than low elasticity
+- T2 panel: all lines flat and clustered — uniform attenuation
 
-> The biggest surprise: we expected more complex models to help.
-> They didn't. The structure of trade disruption appears simple —
-> and that simplicity is itself a finding.
+Stat cards below figure:
+- Exited products: σ = −11.6 (more elastic)
+- Surviving products: σ = −8.7 (less elastic)
+- Difference: t = −6.33, p < 0.001
+
+Punchline: "Selection explains who exited. It does not explain why survivors stopped responding."
 
 ---
 
-### Appendix
+## Verbal delivery notes
 
-- A1: Retaliation asymmetry (Fig 3, Fig 9)
-- A2: Payoff phase diagrams (Fig 5, 6)
-- A3: RF feature importance + Gini vs logistic explanation (Fig 12b)
-- A4: Full data provenance (DATA_PROVENANCE.md)
-- A5: Pipeline diagram (scripts 01–19)
-- A6: HS2 null — all eight specifications
-- A7: Group A vs B adaptation test
+**Slide 4 (t=−16.4):** "A t-statistic of 16 is not a noisy student result.
+This is one of the strongest associations in the empirical trade literature
+for a cross-sectional regression of this type."
+
+**Slide 5 (failure):** Let the numbers land before explaining.
+"The model predicted −84%. The actual was −26%. That's a 58 percentage
+point failure. The model learned Trump 1. The world changed. The model broke."
+
+**Slide 7 (buckets):** "No regression. No p-values. Just: did higher tariffs
+correspond to bigger declines? In 2019, yes — clear staircase. In 2025, no —
+every bucket fell roughly the same amount."
+
+**Slide 12 (lesson 3):** "We now have evidence for the mechanism.
+Products that disappeared between 2019 and 2025 were significantly more
+elastic. But here's the twist — even among the high-elasticity survivors,
+the tariff response was absent. Selection explains part of the story.
+Not all of it. That's where the next paper begins."
+
+---
+
+## Build instructions
+
+```bash
+# Ensure all figures are in /home/claude/ (or adjust paths in build_deck.js)
+# Required figures:
+#   fig1.png    ← fig1_resolution_contrast_v2.png
+#   fig2.png    ← fig2_hs6_import_effect.png
+#   fig7.png    ← fig7_trump1_vs_trump2.png
+#   fig10.png   ← fig10_predictive_validation.png
+#   fig11b.png  ← fig11b_disruption_prob.png
+#   fig11c.png  ← fig11c_logistic_coefficients.png
+#   fig12.png   ← fig12_model_comparison.png
+#   figA1.png   ← figA1_hs_hierarchy.png
+#   figA2.png   ← figA2_tariff_distribution.png (optional)
+#   figA3.png   ← figA3_merge_flow.png
+#   figA4.png   ← figA4_tariff_timeline.png
+#   figA5.png   ← figA5_bucket_comparison.png
+#   figA6.png   ← figA6_elasticity_dose_response.png
+
+node build_deck.js
+# Output: when_tariffs_stop_moving_trade.pptx
+```

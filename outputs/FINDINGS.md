@@ -1,170 +1,189 @@
-# Findings: Structural Predictors of Trade-Conflict Disruption
-### US-China 2018-19 and 2025 — empirical companion to the MARL trade model
+# Findings: When Tariffs Stop Moving Trade
+### US-China Product-Level Evidence, 2019–2025
+### Wharton Data Science Academy Capstone — Nikhil M.
 
 ---
 
-## The question
+## Core contribution
 
-The MARL trade-conflict model identifies a compact structural predictor —
-follower retaliation capacity relative to leader tariff pressure — that
-governs whether a conflict escalates or deters in simulation. This project
-asks two validation questions:
-1. Does that structure appear in real trade flows during the 2018-19 US-China
-   tariff war?
-2. Does import demand elasticity change between Trump 1 (2018-19) and
-   Trump 2 (2025) — and does this reflect adaptive-systems behavior?
+Trade-policy effects are highly resolution-dependent. A strong product-level
+dose-response in 2019 failed to generalize to 2025. Preliminary elasticity
+analysis suggests compositional selection — elastic products exiting
+disproportionately — partially explains the attenuation, but not fully.
+Additional mechanisms (supply-chain restructuring, trade diversion) remain
+to be identified.
 
 ---
 
-## Part 1: Trump 1 (2018-19) — three empirical findings
+## Finding 1: Resolution dependence
 
-### Finding 1: No signal at the chapter (HS2) level
+At HS2 (97 chapters): slope ≈ 0, t = −0.8, ns.
+At HS6 (3,201 products): slope = −0.019, **t = −16.4**, p < 1e-50.
 
-At HS2, tariff measures showed no detectable relationship to trade
-disruption in any specification. Every correlation sat near zero. This
-is a resolution problem, not a null result.
+Same data, same tariffs, two resolutions. The HS2 null result is a
+measurement artifact: each chapter averages tariffed and untariffed products
+together, cancelling the signal. The relationship lives at the resolution
+where the policy instrument is applied.
 
-### Finding 2: Strong, clean signal at the product (HS6) level
-
-Regressing 2019 import change on the US Section 301 tariff (3,201 products,
-Bown 2021 data):
-
-> slope = −0.019 per tariff pp,  **t = −16.4**,  p < 1e-50
-
-Monotonic across tariff buckets: untariffed products grew +18%;
-products >25% tariff fell −46%.
-
-**Why this matters more because of Finding 1:** HS2 aggregation averages
-tariffed and untariffed products within the same chapter, cancelling the
-effect. The relationship lives at the resolution of the policy instrument,
-exactly as Amiti, Redding & Weinstein (2019) argue.
-
-### Finding 3: Retaliation bit too — but weaker and asymmetric
-
-China retaliation regression (1,986 products):
-
-> slope = −0.012,  **t = −4.3**,  p ≈ 2e-5
-
-Real but weaker — about 60% of the US import-side effect. Non-monotonic
-across buckets due to commodity volatility. The top 20 HS6 products
-account for **41%** of all US export value to China — China's retaliation
-was structurally constrained, the empirical echo of follower-capacity
-limitation in the CIFEr model.
+**Bucket evidence:**
+- Untariffed products (0%): +18% vs baseline
+- Products >25% tariff: −46% vs baseline
+- Monotonic staircase across all four tariff tiers
 
 ---
 
-## Part 2: Trump 2 (2025) — elasticity collapse
+## Finding 2: Trump 1 predictive model (OLS)
 
-### Finding 4: Import demand elasticity fell 99% between episodes
+Trained on 3,201 HS6 products, 2019 cross-section:
 
-Direct regression of 2025 import change on actual WTO Nov-2025 tariff
-rates (3,164 products):
+> import_change = 0.317 − 0.0192 × us_tariff_2019
 
-> Trump 1 slope: **−0.019** (t = −16.4, p < 1e-50)
-> Trump 2 slope: **−0.00017** (t = −0.3, p = 0.76)
-> Elasticity ratio: **0.01x** — 99% reduction
+Logistic classification (outcome: import decline >30%):
+- AUC = 0.689 (held-out test set, 80/20 stratified split)
+- Tariff rate is the dominant predictor
+- Product size (log baseline imports) adds a protective effect
+- Trade asymmetry adds nothing (z = 0.10, ns)
 
-The dose-response that was strong and monotonic in 2019 had completely
-vanished by 2025. Products remaining in the US-China trade relationship
-by 2025 were those where substitution was structurally hardest, making
-their import volumes insensitive to marginal tariff variation. Trump 2
-tariffs hit a residual of structurally inelastic trade.
+Model comparison (same 3 features, same split):
+- Logistic: AUC = 0.677
+- Random Forest: AUC = 0.657
+- XGBoost: AUC = 0.630
 
-### Finding 5: Both sides' elasticities collapsed (four-bar summary)
-
-| Episode | Side | Slope | t | Significance |
-|---------|------|-------|---|---|
-| Trump 1 | US tariff → imports | −0.0192 | −16.4 | *** |
-| Trump 1 | China retaliation → exports | −0.0119 | −4.3 | *** |
-| Trump 2 | US tariff → imports | −0.0002 | −0.3 | ns |
-| Trump 2 | China retaliation → exports | +0.0017 | +1.3 | ns |
-
-Both the US tariff effect and the Chinese retaliation effect collapsed
-to statistical noise by 2025. The T2 retaliation sign-flip (positive
-but ns) reflects that the US exports still flowing to China despite
-high tariffs are structurally necessary — inelastic by selection, not
-by tariff immunity.
-
-### The adaptive-systems interpretation
-
-> Repeated tariff pressure over seven years functioned as a selection
-> mechanism: elastic, substitutable trade restructured away from China
-> (supply chains moved to Vietnam, Taiwan, Mexico), leaving a residual
-> that is structurally resistant to further disruption. By 2025, the
-> tariff instrument had exhausted its marginal discriminating power —
-> the remaining bilateral trade is the hardest-to-move fraction, where
-> additional tariff escalation produces no differential product-level
-> response.
-
-This is the empirical analogue of the MARL model's adaptive-agent
-behavior: repeated strategic pressure induces structural adjustment
-that progressively reduces the responsiveness of remaining flows to
-further pressure. The structural predictor that worked in Trump 1 had
-been adapted away by Trump 2.
+Simpler model wins. The disruption structure is linear.
 
 ---
 
-## The payoff phase diagrams
+## Finding 3: Predictive failure — Trump 2
 
-Observable payoff terms from CIFEr eqs (4)–(5), no calibration params:
+Applied the Trump 1 OLS model out-of-sample to 3,164 products at actual
+WTO Nov-2025 tariff rates:
 
-**Normalized version:** dense cells cluster near zero to mildly
-US-favorable everywhere. No regime structure. The simulation's clean
-diagonal boundary does not reproduce in disaggregated real data.
+| | Predicted | Actual | Gap |
+|--|-----------|--------|-----|
+| Products >50% tariff | −84% | −26% | +58pp |
 
-**Dollar version (trend-projected, 471 products):** US +$7.2B,
-China −$17.6B, US−China = +$24.7B. Weak directional consistency with
-MARL prediction but dominated by a few giant categories (phones = $3.4B).
-The pattern reflects concentration rather than a smooth structural geometry.
+The model broke. The world changed.
 
-**Honest comparison to the MARL grid:** the simulation's compact regime
-structure is an artifact of full calibration. What survives contact with
-reality is the directional logic — leader pressure generates leader payoff
-advantage — but not the sharp diagonal boundary.
+**Direct Trump 2 regression (WTO rates):**
+> slope = −0.0002, t = −0.3, ns
+
+The dose-response that was −0.019 in 2019 is essentially zero in 2025.
+
+**Bucket table (Trump 2):**
+
+| Tariff bucket | n products | Median decline |
+|--------------|-----------|---------------|
+| Low (0–25%) | 345 | −30% |
+| Medium (25–40%) | 956 | −30% |
+| High (40–50%) | 1,329 | −27% |
+| Very High (50–100%) | 534 | −30% |
+
+Every bucket fell ~28–30% regardless of tariff level. Dose-response vanished.
+Compared to Trump 1, where the same bucket analysis showed a clear staircase.
 
 ---
 
-## What this says about the MARL framing
+## Finding 4: Compositional selection (elasticity extension)
 
-The HS6 Trump 1 findings validate two core structural claims from the
-CIFEr paper: tariff pressure maps to disruption at the right resolution,
-and follower-capacity constrains retaliatory leverage. The Trump 2
-comparison extends this: the adaptive behavior the MARL model encodes
-in its agent learning rules appears in the real world as supply-chain
-restructuring over a seven-year horizon. The model's within-episode
-dynamics and the real world's cross-episode structural change are two
-timescales of the same adaptive mechanism.
+**Data:** CEPII ProTEE product-level trade elasticities (sigma = own-price
+import demand elasticity). 4,479 products after excluding NaN and
+wrong-sign estimates. Merged to T1 dataset: 2,730 products (85.3% coverage).
+
+### Test 1: Does elasticity moderate the Trump 1 dose-response?
+
+Interaction model: import_change ~ tariff × sigma
+- Interaction term: β = 0.00010, t = 0.65, p = 0.51 (not significant)
+
+Slope by tercile:
+| Elasticity group | Slope | t |
+|-----------------|-------|---|
+| Low (|σ| < 5.4) | −0.0185 | −11.5 |
+| Medium (|σ| 5.4–9.2) | −0.0164 | −7.6 |
+| High (|σ| ≥ 9.2) | −0.0243 | −8.5 |
+
+Direction is correct (steeper for more elastic products) but the linear
+interaction is too weak to reach significance. Tariff rate dominates.
+
+### Test 2: Compositional selection test (the key result)
+
+Did elastic products exit disproportionately between T1 and T2?
+
+| Group | Mean sigma |
+|-------|-----------|
+| Exited products | −11.58 |
+| Still trading 2025 | −8.66 |
+| Difference | 2.92 |
+| t = −6.33, p ≈ 0 | |
+
+**Products that exited were significantly more elastic.**
+This is direct empirical confirmation of compositional selection —
+not inferred, measured.
+
+### Test 3: T2 slope by elasticity group
+
+| Elasticity group | T2 slope | t |
+|-----------------|---------|---|
+| Low | −0.00104 | −1.12 |
+| Medium | +0.00017 | +0.18 |
+| High | +0.00150 | +1.43 |
+
+All essentially zero. All insignificant.
+
+**The critical implication:** Even among products with historically high
+elasticity, the tariff-response is absent in 2025. This means compositional
+selection (elastic products exiting) is part of the explanation but not
+the entire explanation. Something else also operates — possibly supply-chain
+restructuring, tariff circumvention, or absorption of costs within supply
+chains. This is where the research frontier currently sits.
+
+---
+
+## The three-stage mechanism
+
+**Stage 1 — Trump 1:** Tariffs hit elastic products hardest.
+Evidence: t = −16.4, staircase bucket table, steeper slopes for
+high-elasticity tercile.
+
+**Stage 2 — Selection:** Elastic products exit disproportionately.
+Evidence: exited σ = −11.6 vs surviving σ = −8.7, t = −6.33, p < 0.001.
+
+**Stage 3 — Trump 2:** Remaining products show no tariff-response.
+Evidence: slopes ≈ 0 across all elasticity groups. Even high-elasticity
+survivors are non-responsive — selection was thorough but not the
+complete story.
 
 ---
 
 ## Stated limitations
 
-- Cross-sectional association at annual frequency, not causal
-  identification (cf. Census/ARW monthly DiD designs).
-- Tariff placement was strategic, not random.
-- Retaliation rate: T1 collapsed HS8→HS6 by simple mean; T2 from WTO
-  Tariff Actions Nov-2025 snapshot.
-- CIF/FOB valuation asymmetry between import and export sides.
-- Baseline = flat mean (2015-17 for T1; 2022-24 for T2). Trend-
-  projection attempted but unstable for majority of products.
-- Payoff calibration parameters omitted — reduced-form only.
-- Three other conflict pairs (US-EU, US-Canada, China-Australia)
-  remain on coarse Tier-0 tariff proxy.
-- T2 intra-year rate volatility (10%→145%→50% through 2025); Nov-2025
-  snapshot represents settled second-half regime.
+- Cross-sectional associations at annual frequency, not causal identification.
+- Tariff placement was strategic (Made-in-China-2025 targeting), not random.
+- T2 slope magnitude depends on WTO snapshot date (Nov-2025), annual
+  aggregation, and tariff-rate matching. "Largely absent" not "99% collapse."
+- ProTEE elasticities from HS2007-era data; 89.9% match to our HS2017
+  codes. ~537 unmatched codes excluded from elasticity analysis.
+- ProTEE estimates global import demand elasticities, not US-China bilateral.
+- T2 intra-year rate volatility: 20%→145%→50% through 2025.
+  Nov-2025 snapshot approximates settled H2-2025 regime.
+- Supply-chain restructuring mechanism not directly tested (requires
+  bilateral data from Vietnam, Taiwan, Mexico — future work).
 
 ---
 
 ## Figure inventory
 
-| Figure | Script | Finding |
-|--------|--------|---------|
-| fig1_resolution_contrast | 09 | HS2 aggregation hides the signal |
-| fig2_hs6_import_effect | 09 | Trump 1 HS6 dose-response (t=−16) |
-| fig3_retaliation_asymmetry | 09 | Two-sided T1 comparison |
-| fig4_phase_diagram | 09 | Binned import-change heatmap |
-| fig5_payoff_phase | 10 | Normalized payoff phase (no regime structure) |
-| fig6_payoff_phase_dollars | 11 | Dollar payoff phase (concentration) |
-| fig7_trump1_vs_trump2 | 13 | Proxy slope comparison — flat T2 |
-| fig8_elasticity_comparison | 14 | Direct elasticity comparison — 99% collapse |
-| fig9_four_bar_elasticity | 15 | All four slopes, both episodes |
+| Figure | Script | What it shows |
+|--------|--------|---------------|
+| fig1_resolution_contrast_v2 | 16 | HS2 vs HS6 two-panel with aggregation path |
+| fig2_hs6_import_effect | 09 | Trump 1 dose-response (t = −16.4) |
+| fig7_trump1_vs_trump2 | 13 | Slope comparison: steep T1, flat T2 |
+| fig10_predictive_validation | 17 | T1 model applied to T2 — prediction gap |
+| fig11b_disruption_prob | 18 | Logistic S-curve: P(disruption) by tariff rate |
+| fig11c_logistic_coefficients | 18 | Coefficient forest plot |
+| fig12_model_comparison | 20 | Three-model ROC: Logistic wins |
+| figA1_hs_hierarchy | 21 | HS2→HS4→HS6 classification tree |
+| figA2_tariff_distribution | 21 | T1 vs T2 tariff rate histograms |
+| figA3_merge_flow | 21 | Data merge flow and match rates |
+| figA4_tariff_timeline | 21 | Tariff escalation timeline 2018–2026 |
+| figA5_bucket_comparison | 22 | T1 staircase vs T2 flat (strongest backup slide) |
+| figA6_elasticity_dose_response | 23 | Elasticity × dose-response: T1 fan, T2 flat |
