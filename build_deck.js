@@ -270,20 +270,34 @@ note(s,"So why did the relationship disappear? Part of the answer lies in select
 {const s=pres.addSlide(); wbg(s);
 tag(s,"TRADE DIVERSION",2.0);
 ttl(s,"Where did the trade go?");
-s.addImage({path:fp("fig15"),x:0.3,y:1.22,w:9.4,h:2.9});
+s.addImage({path:fp("fig15"),x:0.3,y:1.22,w:9.4,h:2.72});
+// Product quadrant breakdown — what happened to the 2,313 products
+[{lbl:"Diversion (China↓, VN/MX/TW↑)", pct:"35.6%", nn:"824 products", col:STEEL},
+ {lbl:"Destruction (China↓, 3rd flat)", pct:"41.7%", nn:"965 products", col:RED  }
+].forEach((q,i)=>{
+  const x=0.3+i*4.75;
+  s.addShape(pres.ShapeType.rect,{x,y:4.02,w:4.55,h:0.45,
+    fill:{color:OFFWHT},line:{color:i===0?STEEL:RED,width:0.75},rectRadius:0.04});
+  s.addText(q.pct,{x:x+0.1,y:4.05,w:0.85,h:0.36,
+    fontSize:18,color:q.col,bold:true,valign:"middle",fontFace:F});
+  s.addText(q.lbl,{x:x+1.0,y:4.06,w:3.44,h:0.22,
+    fontSize:10,color:CHARCOAL,bold:true,fontFace:F});
+  s.addText(q.nn,{x:x+1.0,y:4.26,w:3.44,h:0.18,
+    fontSize:9,color:MIDGRAY,italic:true,fontFace:F});
+});
 // 14.5¢ hero box
-s.addShape(pres.ShapeType.rect,{x:0.3,y:4.2,w:9.4,h:0.75,
+s.addShape(pres.ShapeType.rect,{x:0.3,y:4.55,w:9.4,h:0.45,
   fill:{color:MIST},line:{color:STEEL,width:0.75},rectRadius:0.05});
 s.addText("~14.5 cents on the dollar",
-  {x:0.3,y:4.22,w:4.8,h:0.72,fontSize:28,color:NAVY,bold:true,
+  {x:0.3,y:4.55,w:4.8,h:0.45,fontSize:22,color:NAVY,bold:true,
     align:"center",valign:"middle",fontFace:F});
-s.addShape(pres.ShapeType.line,{x:5.15,y:4.25,w:0,h:0.65,line:{color:STEEL,width:0.75}});
+s.addShape(pres.ShapeType.line,{x:5.15,y:4.59,w:0,h:0.35,line:{color:STEEL,width:0.75}});
 s.addText("captured by Vietnam, Mexico + Taiwan",
-  {x:5.25,y:4.27,w:4.35,h:0.3,fontSize:12,color:CHARCOAL,fontFace:F});
+  {x:5.25,y:4.58,w:4.35,h:0.22,fontSize:11,color:CHARCOAL,fontFace:F});
 s.addText("The remaining ~85.5 cents: demand destruction, reshoring, other diversion",
-  {x:5.25,y:4.57,w:4.35,h:0.28,fontSize:10,color:MIDGRAY,fontFace:F,italic:true});
+  {x:5.25,y:4.77,w:4.35,h:0.21,fontSize:9,color:MIDGRAY,fontFace:F,italic:true});
 bar(s,"Diversion is real. It is also partial. Why did 85 cents disappear?");
-note(s,"Where did the trade go? For each HS6 product, the x-axis shows how much China lost during the Trump 1 shock in 2019 relative to the 2015-to-2017 baseline. The y-axis shows how much imports from the third country rose by 2025 relative to the 2022-to-2024 baseline. The 6-year gap is intentional — supply-chain restructuring takes years, not months. A positive slope means products hurt most by Trump 1 tariffs are the same products that third countries gained most by 2025 — the signature of tariff-driven diversion.\n\nAll three destinations show statistically significant positive slopes. Vietnam: slope 0.236, t 3.27 — broad manufacturing relocation across categories. Taiwan: slope 0.211, t 5.55 — the tightest, most statistically reliable channel, consistent with Taiwan's role as the primary alternative source for semiconductor and electronics supply chains, the exact HS chapters 84 and 85 hit hardest by Trump 1 tariffs. Mexico: slope 0.077, t 2.10 — a weaker marginal effect, consistent with USMCA already providing preferential access before the tariffs.\n\nTogether, the three destinations captured approximately 14.5 cents of each dollar China lost. The remaining 85.5 cents is unaccounted — trade destruction, reshoring to US domestic production, or diversion to countries not in our sample. Diversion is real and statistically clear. It is also partial. The 85 cents is the next paper.");}
+note(s,"Where did the trade go? For each HS6 product, the x-axis shows how much China lost during the Trump 1 shock in 2019 relative to the 2015-to-2017 baseline. The y-axis shows how much imports from the third country rose by 2025 relative to the 2022-to-2024 baseline. The 6-year gap is intentional — supply-chain restructuring takes years, not months. A positive slope means products hurt most by Trump 1 tariffs are the same products that third countries gained most by 2025 — the signature of tariff-driven diversion.\n\nAll three destinations show statistically significant positive slopes. Vietnam: slope 0.262, t 3.08 — broad manufacturing relocation across categories. Taiwan: slope 0.178, t 5.58 — the strongest t-statistic of the three, consistent with Taiwan's deep existing capacity in semiconductor and electronics supply chains, the exact HS chapters 84 and 85 hit hardest by Trump 1 tariffs. Mexico: slope 0.075, t 2.41 — a weaker marginal effect, consistent with USMCA already providing preferential access before the tariffs.\n\nAt the product level: 35.6 percent of affected products show the classic diversion pattern — China declined, third country rose. 41.7 percent show destruction — China declined, third country flat. Destruction outnumbers diversion by 6 points. Together, the three destinations captured approximately 14.5 cents of each dollar China lost. The remaining 85.5 cents is unaccounted. Diversion is real. It is also partial. The 85 cents is the next paper.");}
 
 // ═══════════════════════════════════════════════════════════
 // SLIDE 10 — FOUR LESSONS
@@ -399,24 +413,38 @@ s.addImage({path:fp("figA6"),x:0.3,y:0.48,w:9.4,h:3.6});
 appBar(s,"Selection explains who exited.  It does not explain why survivors stopped responding.");
 note(s,"This is the full elasticity extension using CEPII ProTEE own-price demand elasticities. The two panels break the dose-response by elasticity group: low, medium, and high sigma. In Trump 1 on the left, the dose-response is steeper for high-elasticity products — exactly as theory predicts. Price-sensitive products respond more to a tariff-driven price increase. In Trump 2 on the right, all three groups converge near zero slope — uniform attenuation across all responsiveness levels. This is the key null result within the elasticity analysis: it is not that elastic products adapted more while inelastic products continued responding. Every group stopped responding. The stat table shows the selection finding: exited products had mean sigma of minus 11.6 versus minus 8.7 for survivors, t of minus 6.33, covering 85.3 percent of products matched to elasticity data. Selection explains the composition change. It does not explain the behavioral change among those who stayed.");}
 
-// A7 — DIVERSION (three-country detail)
-// Stats match fig15_diversion_by_country.png (figures are canonical)
+// A7 — DIVERSION (three-country detail) — stats from script 27 final output
 {const s=pres.addSlide();wbg(s);
 appTag(s,"A7","Trade diversion: Vietnam, Mexico + Taiwan");
-s.addImage({path:fp("fig15"),x:0.3,y:0.48,w:9.4,h:3.55});
-[{lbl:"Vietnam",  val:"t = 3.27", sub:"slope = 0.236"},
- {lbl:"Taiwan",   val:"t = 5.55", sub:"slope = 0.211  ★"},
- {lbl:"Mexico",   val:"t = 2.10", sub:"slope = 0.077"},
+s.addImage({path:fp("fig15"),x:0.3,y:0.48,w:9.4,h:2.78});
+// Per-country stat cards — values from script 27 console output
+[{lbl:"Vietnam",  val:"t = 3.08", sub:"slope = 0.262"},
+ {lbl:"Taiwan",   val:"t = 5.58", sub:"slope = 0.178  ★"},
+ {lbl:"Mexico",   val:"t = 2.41", sub:"slope = 0.075"},
  {lbl:"Combined", val:"t = 4.69", sub:"14.5¢ per $1.00"}].forEach((e,i)=>{
   const x=0.3+i*2.38;
-  s.addShape(pres.ShapeType.rect,{x,y:4.1,w:2.2,h:1.05,
+  s.addShape(pres.ShapeType.rect,{x,y:3.34,w:2.2,h:0.78,
     fill:{color:OFFWHT},line:{color:LTGRAY,width:0.75},rectRadius:0.04});
-  s.addText(e.lbl,{x,y:4.14,w:2.2,h:0.25,fontSize:9.5,color:MIDGRAY,align:"center",bold:true,fontFace:F});
-  s.addText(e.val,{x,y:4.37,w:2.2,h:0.38,fontSize:16,color:NAVY,align:"center",bold:true,fontFace:F});
-  s.addText(e.sub,{x,y:4.73,w:2.2,h:0.3, fontSize:9,color:CHARCOAL,align:"center",italic:true,fontFace:F});
+  s.addText(e.lbl,{x,y:3.38,w:2.2,h:0.22,fontSize:9.5,color:MIDGRAY,align:"center",bold:true,fontFace:F});
+  s.addText(e.val,{x,y:3.58,w:2.2,h:0.32,fontSize:15,color:NAVY,align:"center",bold:true,fontFace:F});
+  s.addText(e.sub,{x,y:3.88,w:2.2,h:0.22,fontSize:9,color:CHARCOAL,align:"center",italic:true,fontFace:F});
 });
-appBar(s,"All three channels significant. Taiwan strongest (t=5.55). Together: ~14.5 cents on the dollar.");
-note(s,"The full three-country diversion detail. Each dot is one HS6 product. X-axis: how much China lost in the Trump 1 shock, as import change relative to the 2015-to-2017 baseline — further right means China lost more. Y-axis: how much the third country gained by 2025 relative to the 2022-to-2024 baseline. The 6-year gap captures gradual restructuring — sourcing relationships take time to establish. A positive slope is the diversion signature: products China lost most in 2019 are the ones Vietnam, Taiwan, and Mexico gained most by 2025.\n\nVietnam slope 0.236, t 3.27: broad manufacturing relocation across categories. Taiwan slope 0.211, t 5.55 — the tightest signal with the highest t-statistic: semiconductor and electronics supply chains shifted to Taiwan with a speed and consistency no other destination matched, consistent with Taiwan's deep existing capacity in HS chapters 84 and 85. Mexico slope 0.077, t 2.10: weaker marginal effect consistent with USMCA already providing preferential access before the tariffs, making tariff-driven diversion harder to isolate. Combined slope 0.145, t 4.69: approximately 14.5 cents per dollar. Taiwan data comes from USITC DataWeb since UN Comtrade suppresses US-Taiwan bilateral flows; both datasets use proportional changes so the FOB versus CIF basis difference does not affect slope comparisons.");}
+// Product quadrant breakdown — Test 2 output (n=2,313 products in diversion sample)
+[{lbl:"Diversion",   sub:"China↓  ·  VN/MX/TW↑",    pct:"35.6%", nn:"824", col:STEEL},
+ {lbl:"Destruction", sub:"China↓  ·  VN/MX/TW flat", pct:"41.7%", nn:"965", col:RED  }
+].forEach((q,i)=>{
+  const x=0.3+i*4.75;
+  s.addShape(pres.ShapeType.rect,{x,y:4.20,w:4.55,h:0.88,
+    fill:{color:OFFWHT},line:{color:i===0?STEEL:RED,width:0.75},rectRadius:0.04});
+  s.addText(q.lbl+"  —  "+q.sub,{x:x+0.1,y:4.24,w:4.35,h:0.22,
+    fontSize:9.5,color:CHARCOAL,bold:true,fontFace:F});
+  s.addText(q.pct,{x:x+0.1,y:4.44,w:1.4,h:0.45,
+    fontSize:24,color:q.col,bold:true,fontFace:F});
+  s.addText(q.nn+" products  (of 2,313)",{x:x+1.55,y:4.57,w:2.95,h:0.26,
+    fontSize:10,color:MIDGRAY,fontFace:F,italic:true});
+});
+appBar(s,"35.6% diversion, 41.7% destruction — product counts, not dollar shares. Large products skew dollar totals.");
+note(s,"The full three-country diversion detail. Each dot is one HS6 product. X-axis: how much China lost in the Trump 1 shock relative to the 2015-to-2017 baseline. Y-axis: how much the third country gained by 2025 relative to the 2022-to-2024 baseline. The 6-year gap captures gradual restructuring.\n\nStats from script 27 final output: Vietnam slope 0.262, t 3.08 — broad manufacturing relocation across categories. Taiwan slope 0.178, t 5.58 — the strongest t-statistic of the three, consistent with semiconductor and electronics supply chains that shifted to Taiwan's deep existing capacity in HS chapters 84 and 85. Mexico slope 0.075, t 2.41 — weaker marginal effect, consistent with USMCA already providing preferential access before the tariffs. Combined slope 0.145, t 4.69.\n\nThe product quadrant breakdown (Test 2): of 2,313 products in the diversion sample, 824 (35.6%) show the diversion pattern — China declined and a third country rose. 965 (41.7%) show destruction — China declined but no third-country offset. Important caveat: product counts do not equal dollar amounts. Large products skew dollar totals significantly; the 14.5-cent regression slope is the more reliable dollar-weighted estimate.\n\nPlacebo check (Test 4): untariffed products showed a mean VN/MX/TW rise of 70.5% versus 36.1% for tariffed products — opposite to what a pure tariff-diversion story predicts. This reflects a strong general nearshoring trend (COVID supply-chain restructuring, USMCA incentives, Vietnam manufacturing expansion) that lifted VN/MX imports broadly, independent of tariff exposure. The script's 'significant difference → diversion story' label is incorrect for this direction. The honest conclusion: the positive slope in Test 1 is real and significant, but the placebo result means it likely reflects a mix of tariff-driven diversion and general nearshoring. Taiwan data from USITC DataWeb; proportional changes are comparable across FOB/CIF sources.");}
 
 // A8 — SLOPE COMPARISON (was main deck slide 7)
 {const s=pres.addSlide();wbg(s);

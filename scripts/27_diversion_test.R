@@ -9,6 +9,13 @@ library(dplyr); library(readr); library(ggplot2); library(tidyr)
 fig  <- "figures"
 proc <- "data_processed"
 
+# Ensure output directory exists
+if (!dir.exists(fig)) {
+  dir.create(fig, recursive=TRUE)
+  message("Created figures/ directory at: ", normalizePath(fig))
+}
+message("Figures will be saved to: ", normalizePath(fig))
+
 NAVY    <- "#1E2761"; BLUE   <- "#1F5C8A"; STEEL  <- "#4A6FA5"
 RED     <- "#B03A2E"; MIDGRAY<- "#666666"; OFFWHT <- "#F7F9FC"
 CHARCOAL<- "#333333"; WHITE  <- "#FFFFFF"; MIST   <- "#E8EEF4"
@@ -142,18 +149,16 @@ d_long <- d %>%
   mutate(china_w = w(china_decline_t1),
          third_w = w(third_change))
 
-# Per-country stats for strip labels
-strip_stats <- d_long %>%
-  group_by(country) %>%
-  group_modify(~{
-    m <- lm(third_w ~ china_w, data=.x)
-    tibble(
-      slope = round(coef(m)[2], 3),
-      tstat = round(summary(m)$coef[2,3], 2),
-      pval  = summary(m)$coef[2,4],
-      n     = nrow(.x)
-    )
-  }) %>%
+# Per-country stats — use same models as Test 1 to keep in sync
+strip_stats <- tibble(
+  country = c("Vietnam", "Mexico", "Taiwan"),
+  slope   = c(round(coef(m_vn)[2],3), round(coef(m_mx)[2],3), round(coef(m_tw)[2],3)),
+  tstat   = c(round(summary(m_vn)$coef[2,3],2), round(summary(m_mx)$coef[2,3],2),
+              round(summary(m_tw)$coef[2,3],2)),
+  pval    = c(summary(m_vn)$coef[2,4], summary(m_mx)$coef[2,4],
+              summary(m_tw)$coef[2,4]),
+  n       = c(nrow(d_vn), nrow(d_mx), nrow(d_tw))
+) %>%
   mutate(label = paste0(country, "\n(n=", n, ", slope=", slope,
                         ", t=", tstat,
                         ifelse(pval < 0.05, "*", ""), ")"))
