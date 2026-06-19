@@ -29,7 +29,7 @@ f2 <- ggplot(imp, aes(us_tariff_2019, import_change_w)) +
   annotate("text", x = 2, y = 1.35, hjust = 0, color = INK, size = 4,
            label = "Untariffed products\ngrew ~18%") +
   annotate("text", x = 43, y = -0.75, hjust = 1, color = INK, size = 4,
-           label = "Products >25% tariff\nfell ~46%") +
+           label = "Products >25% tariff\nmedian −23%") +
   coord_cartesian(ylim = c(-1, 1.5)) +
   labs(title = "US tariffs predict 2019 import declines at the product (HS6) level",
        subtitle = "Each dot = one HS6 product (n = 3,201). Red line = OLS fit; band = 95% CI.\nSlope = -0.019 per tariff-point  (t = -16.4, p < 1e-50).",

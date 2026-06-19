@@ -174,17 +174,17 @@ s.addText("Strongest signal\nin the study",
   {x:7.0,y:2.08,w:2.6,h:0.65,fontSize:10.5,color:SLATE,align:"center",fontFace:F});
 s.addShape(pres.ShapeType.rect,{x:7.0,y:3.0,w:2.6,h:1.97,
   fill:{color:OFFWHT},line:{color:LTGRAY,width:0.75},rectRadius:0.05});
-s.addText("64pp spread",
+s.addText("41pp spread",
   {x:7.0,y:3.08,w:2.6,h:0.55,fontSize:20,color:NAVY,bold:true,align:"center",fontFace:F});
 s.addShape(pres.ShapeType.line,{x:7.15,y:3.68,w:2.3,h:0,line:{color:LTGRAY,width:0.5}});
 s.addText("+18%  untariffed",
   {x:7.05,y:3.75,w:2.5,h:0.28,fontSize:10.5,color:STEEL,bold:true,fontFace:F});
-s.addText("−46%  highest tariff",
+s.addText("−23%  highest tariff",
   {x:7.05,y:4.05,w:2.5,h:0.28,fontSize:10.5,color:RED,bold:true,fontFace:F});
 s.addText("across tariff distribution",
   {x:7.05,y:4.4,w:2.5,h:0.4,fontSize:9,color:MIDGRAY,fontFace:F,italic:true});
 bar(s,"Yes. At the product level, the 2019 relationship is unmistakable.");
-note(s,"At the product level, the 2019 relationship is unmistakable. The slope is minus 0.019 per tariff percentage point — meaning every additional percentage point of tariff was associated with a 1.9 percentage point reduction in imports relative to the pre-tariff baseline. Products with zero tariff actually grew about 18 percent above their 2015-to-2017 baseline — consistent with trade diversion into untariffed categories as buyers shifted sourcing. Products above the 25 percent threshold fell 46 percent on average. That is a 64 percentage-point spread from top to bottom of the tariff distribution. The confidence band around the regression line is tight. The t-statistic of minus 16.4 means this is not a marginal finding — it is among the strongest signals in cross-sectional trade economics. This is the relationship we will now test forward in time.");}
+note(s,"At the product level, the 2019 relationship is unmistakable. The slope is minus 0.019 per tariff percentage point — meaning every additional percentage point of tariff was associated with a 1.9 percentage point reduction in imports relative to the pre-tariff baseline. Products with zero tariff actually grew about 18 percent above their 2015-to-2017 baseline — consistent with trade diversion into untariffed categories as buyers shifted sourcing. Products in the maximum tariff bucket, above 25 percent, fell 23 percent on average — a 41 percentage-point spread from top to bottom of the distribution. Note: the regression line reaches approximately minus 46 percent at the rightmost data point near 40 percent tariff; the minus 23 percent is the non-parametric median for that bucket. The sidebar reports the median, which matches the bucket table on slide 7. The t-statistic of minus 16.4 means this is not a marginal finding. This is the relationship we will now test forward in time.");}
 
 // ═══════════════════════════════════════════════════════════
 // SLIDE 5 — PREDICTIVE FAILURE
@@ -311,7 +311,7 @@ s.addShape(pres.ShapeType.line,{x:0.5,y:1.3,w:9,h:0,line:{color:STEEL,width:0.75
 [{num:"1",head:"Resolution matters.",
   body:"The HS6 relationship (t = −16.4) was invisible at HS2. The signal lives where tariffs are applied."},
  {num:"2",head:"Tariffs predicted disruption in 2019.",
-  body:"+18% untariffed, −46% heavily tariffed. A logistic model predicts disruption with AUC 0.677."},  // FIX: was 0.689
+  body:"+18% untariffed, −23% maximum tariff bucket. A logistic model predicts disruption with AUC 0.677."},  // FIX: was 0.689
  {num:"3",head:"The relationship disappeared by 2025.",
   body:"Elastic products exited disproportionately (t = −6.33, p < 0.001). Even among survivors, dose-response was absent."},
  {num:"4",head:"The dose-response attenuated 6×.",
